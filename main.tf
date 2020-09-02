@@ -10,7 +10,7 @@ resource "aws_launch_configuration" "example" {
   user_data = <<-EOF
               #!bin/bash
               echo "Hello World! From: Busy Box" > index.html
-              nohub busybox httpd -f -p ${var.server_port} &
+              nohup busybox httpd -f -p ${var.server_port} &
               EOF
 
   lifecycle {
