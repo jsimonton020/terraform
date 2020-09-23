@@ -35,3 +35,4 @@ terraform.rc
 
 env.sh
 .idea/
+setup/

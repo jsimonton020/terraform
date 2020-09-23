@@ -136,3 +136,9 @@ output "alb_dns_name" {
   description = "The domain name of the load balancer"
   value = aws_lb.example.dns_name
 }
+
+terraform {
+  backend "s3" {
+    key = "stage/services/webserver-cluster/terraform.tfstate"
+  }
+}
