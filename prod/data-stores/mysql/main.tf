@@ -3,11 +3,11 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "example" {
-  identifier_prefix = "stage-tf-up-and-running"
+  identifier_prefix = "prod-tf-up-and-running"
   engine = "mysql"
   allocated_storage = 10
   instance_class = "db.t2.micro"
-  name = "stagedb"
+  name = "proddb"
   username = "admin"
   password = var.db_password
   skip_final_snapshot = true
@@ -18,6 +18,6 @@ resource "aws_db_instance" "example" {
 # passed in from a file via 'terraform init -backend-config=/home/jsimonton/terraform/setup/backend.hcl'
 terraform {
   backend "s3" {
-    key = "stage/data-stores/mysql/terraform.tfstate"
+    key = "prod/data-stores/mysql/terraform.tfstate"
   }
 }
