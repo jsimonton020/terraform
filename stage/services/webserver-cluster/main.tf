@@ -6,12 +6,7 @@ resource "aws_launch_configuration" "example" {
   image_id = "ami-0dd005d3eb03f66e8"
   instance_type = "t2.micro"
   security_groups = [aws_security_group.instance.id]
-
-  user_data = <<-EOF
-              #!bin/bash
-              echo "Hello World! From: Busy Box" > index.html
-              nohup busybox httpd -f -p ${var.server_port} &
-              EOF
+  user_data = data.template_file.user_data.rendered
 
   lifecycle {
     create_before_destroy = true
@@ -118,12 +113,6 @@ resource "aws_security_group" "alb" {
   }
 }
 
-variable "server_port" {
-  description = "The port the server will listen on"
-  type = number
-  default = 8080
-}
-
 data "aws_vpc" "default" {
   default = true
 }
@@ -132,11 +121,28 @@ data "aws_subnet_ids" "default" {
   vpc_id = data.aws_vpc.default.id
 }
 
-output "alb_dns_name" {
-  description = "The domain name of the load balancer"
-  value = aws_lb.example.dns_name
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config = {
+    bucket = "js020-terraform-state"
+    key = "stage/data-stores/mysql/terraform.tfstate"
+    region = "us-west-1"
+  }
 }
 
+data "template_file" "user_data" {
+  template = file("user-data.sh")
+
+  vars = {
+    server_port = var.server_port
+    db_address  = data.terraform_remote_state.db.outputs.address
+    db_port     = data.terraform_remote_state.db.outputs.port
+  }
+}
+
+# Partial configuration. The other settings (e.g., bucket, region) will be
+# passed in from a file via 'terraform init -backend-config=/home/jsimonton/terraform/setup/backend.hcl'
 terraform {
   backend "s3" {
     key = "stage/services/webserver-cluster/terraform.tfstate"
