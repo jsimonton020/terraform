@@ -4,6 +4,11 @@ output "alb_dns_name" {
 }
 
 output "asg_name" {
-  desscription = "The name of the Auto Scaling Group"
+  description = "The name of the Auto Scaling Group"
   value = aws_autoscaling_group.example.name
+}
+
+output "alb_security_group_id" {
+  value = aws_security_group.alb.id
+  description = "The ID of the Security Group attached to the load balancer"
 }
