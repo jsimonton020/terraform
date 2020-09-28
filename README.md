@@ -1,1 +1,0 @@
-Terraform Up and Running
