@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "webserver_cluster" {
-  source = "git@github.com:jsimonton020/terraform_modules.git?ref=v0.0.1"
+  source = "git@github.com:jsimonton020/terraform_modules.git//services/webserver-cluster?ref=v0.0.2"
 
   cluster_name = "webservers-stage"
   db_remote_state_bucket = "js020-terraform-state"
@@ -12,11 +12,6 @@ module "webserver_cluster" {
   instance_type = "t2.micro"
   min_size = 2
   max_size = 2
-}
-
-output "alb_dns_name" {
-  description = "The domain name of the load balancer"
-  value = module.webserver_cluster.alb_dns_name
 }
 
 # Partial configuration. The other settings (e.g., bucket, region) will be
