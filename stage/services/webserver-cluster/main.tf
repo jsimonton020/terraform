@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "webserver_cluster" {
-  source = "git@github.com:jsimonton020/terraform_modules.git//services/webserver-cluster?ref=v0.0.2"
+  source = "/home/jsimonton/terraform/modules/services/webserver-cluster"
 
   cluster_name = "webservers-stage"
   db_remote_state_bucket = "js020-terraform-state"
@@ -12,6 +12,11 @@ module "webserver_cluster" {
   instance_type = "t2.micro"
   min_size = 2
   max_size = 2
+
+  custom_tags = {
+    Owner      = "team-prod"
+    DeployedBy = "terraform"
+  }
 }
 
 # Partial configuration. The other settings (e.g., bucket, region) will be
